@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>« Agentique » : trois architectures différentes derrière un seul mot — Signal</title>
+<meta name="description" content="Le mot « agent » recouvre des systèmes qui n&#x27;ont ni les mêmes coûts, ni les mêmes modes de panne. Distinguer workflow et agent change les choix d&#x27;architecture — et le budget.">
+<meta property="og:title" content="« Agentique » : trois architectures différentes derrière un seul mot">
+<meta property="og:description" content="Le mot « agent » recouvre des systèmes qui n&#x27;ont ni les mêmes coûts, ni les mêmes modes de panne. Distinguer workflow et agent change les choix d&#x27;architecture — et le budget.">
+<meta property="article:published_time" content="2026-11-01">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="page-article">
+<header class="masthead masthead--slim">
+  <div class="wrap">
+    <div class="masthead__top">
+      <a class="logo" href="../index.html">Signal<span class="logo__dot"></span></a>
+      <nav class="masthead__nav"><a href="../index.html">← Tous les articles</a></nav>
+    </div>
+  </div>
+</header>
+
+<article class="article wrap">
+  <p class="article__meta">
+    <time datetime="2026-11-01">1 novembre 2026</time>
+    <span class="dot"></span>
+    <span>4 min de lecture</span>
+  </p>
+  <h1 class="article__title">« Agentique » : trois architectures différentes derrière un seul mot</h1>
+  <p class="article__lede">Le mot « agent » recouvre des systèmes qui n&#x27;ont ni les mêmes coûts, ni les mêmes modes de panne. Distinguer workflow et agent change les choix d&#x27;architecture — et le budget.</p>
+  <div class="article__tags"><span class="tag">agents</span><span class="tag">architecture</span><span class="tag">llm</span></div>
+
+  <div class="prose">
+<p>On ne vend plus des modèles, on vend des « agents ». Le mot est devenu un argument commercial : il suffit qu&rsquo;une application appelle un LLM deux fois de suite pour qu&rsquo;on parle d&rsquo;« agent autonome ». Derrière ce vocabulaire unique se cachent pourtant des systèmes aux propriétés très différentes — et surtout, aux modes de panne incompatibles.</p>
+<h2 id="le-mot-recouvre-deux-choses-distinctes">Le mot recouvre deux choses distinctes</h2>
+<p>Anthropic a posé la distinction la plus utile dès décembre 2024, dans <em>Building effective agents</em> : un <strong>workflow</strong> est un système où les LLM et les outils sont orchestrés par des chemins de code prédéfinis ; un <strong>agent</strong>, en revanche, est un système où le modèle dirige lui-même son processus et l&rsquo;usage de ses outils, en gardant la main sur la manière d&rsquo;accomplir la tâche [1].</p>
+<p>La différence n&rsquo;est pas sémantique, elle est structurelle :</p>
+<ul>
+<li>dans un workflow, <strong>le graphe d&rsquo;exécution est connu à l&rsquo;avance</strong> : je peux le tester, le borner, prévoir son coût maximal ;</li>
+<li>dans un agent, <strong>le graphe est découvert à l&rsquo;exécution</strong> : je ne peux garantir que la boucle d&rsquo;outils, les bornes de temps et le format de sortie.</li>
+</ul>
+<p>Anthropic ajoute une recommandation qui a mal vieilli dans le discours ambiant : commencer par la solution la plus simple possible, et n&rsquo;augmenter la complexité qu&rsquo;en cas de besoin. Pour beaucoup d&rsquo;applications, un appel unique au modèle enrichi de contexte suffit [1]. Autrement dit : la plupart des produits qui se disent « agents » sont des workflows, et c&rsquo;est très bien ainsi.</p>
+<h2 id="pourquoi-la-confusion-coute-cher">Pourquoi la confusion coûte cher</h2>
+<p>Choisir un agent là où un workflow suffirait se paie sur quatre plans : la latence (boucle d&rsquo;outils = plusieurs allers-retours), le coût par requête (variable, non borné sans garde-fou), la testabilité (une sortie non déterministe se teste par échantillonnage, pas par assertion), et l&rsquo;observabilité (il faut tracer chaque décision d&rsquo;outil pour comprendre un échec).</p>
+<p>Inversement, imposer un workflow à un problème ouvert — navigation dans un dépôt inconnu, correction d&rsquo;un bug dont on ignore la cause — revient à écrire le chemin en dur et à le maintenir à chaque cas nouveau. L&rsquo;agent existe pour ces cas-là : quand l&rsquo;espace des chemins possibles est trop large pour être cartographié.</p>
+<blockquote>
+<p>La bonne question n&rsquo;est jamais « agent ou pas agent ? », mais « où est le dernier point de contrôle humain, et que se passe-t-il s&rsquo;il est franchi par erreur ? »</p>
+</blockquote>
+<h2 id="ce-que-les-donnees-terrain-disent-du-phenomene">Ce que les données terrain disent du phénomène</h2>
+<p>Trois sources récentes donnent la mesure du décalage entre le discours et l&rsquo;usage réel.</p>
+<p><strong>L&rsquo;adoption est massive.</strong> Le rapport DORA 2025, construit sur près de 5 000 professionnels, mesure 90 % d&rsquo;usage de l&rsquo;IA au travail et plus de 80 % de personnes qui déclarent une productivité accrue [2]. Ce n&rsquo;est plus un marché émergent, c&rsquo;est l&rsquo;état par défaut.</p>
+<p><strong>La confiance, elle, recule.</strong> Dans l&rsquo;enquête Stack Overflow 2025, 46 % des développeurs déclarent se méfier activement de l&rsquo;exactitude des outils d&rsquo;IA, contre 33 % qui leur font confiance, et 3 % seulement déclarent une confiance élevée [3]. Les profils les plus expérimentés sont les plus prudents : 20 % de méfiance forte chez eux [3]. Ce n&rsquo;est pas un rejet — c&rsquo;est un ajustement du niveau de vérification.</p>
+<p><strong>L&rsquo;effet amplificateur.</strong> La conclusion centrale de DORA 2025 est que l&rsquo;IA n&rsquo;améliore pas une équipe, elle amplifie ce qui existe déjà : les équipes qui ont des tests automatisés, du versioning propre et des boucles de retour rapides gagnent en débit ; celles qui n&rsquo;en ont pas voient surtout leur instabilité augmenter [2]. L&rsquo;IA n&rsquo;est donc pas un correctif d&rsquo;organisation, c&rsquo;est un multiplicateur.</p>
+<h2 id="trois-questions-avant-de-dire-agent">Trois questions avant de dire « agent »</h2>
+<p>Si vous devez trancher pour un projet, ces trois filtres suffisent dans la majorité des cas.</p>
+<ol>
+<li><strong>L&rsquo;action est-elle réversible ?</strong> Lecture de fichiers, recherche, génération de patch : réversible. Suppression de données, envoi d&rsquo;e-mail, paiement, <code>git push --force</code> : irréversible, donc workflow obligatoire avec validation explicite avant l&rsquo;action.</li>
+<li><strong>Le chemin est-il connaissable à l&rsquo;avance ?</strong> Si oui, écrivez-le. Un agent qui redécouvre à chaque exécution un chemin que vous connaissez déjà est un générateur de latence et de facture.</li>
+<li><strong>Que m&rsquo;apprend un échec ?</strong> Sur un workflow, la trace est lisible : l&rsquo;étape N a échoué. Sur un agent, l&rsquo;échec est une trajectoire ; sans journalisation des appels d&rsquo;outils, il est indébogable — et donc inexploitable en production.</li>
+</ol>
+<h2 id="ce-que-je-retiens">Ce que je retiens</h2>
+<p>« Agentique » ne désigne pas un niveau d&rsquo;intelligence, mais une <strong>répartition du contrôle</strong> : qui décide de la prochaine étape, du code ou du modèle. Tant que cette frontière n&rsquo;est pas explicite dans l&rsquo;architecture, le mot reste un argument marketing, et la facture d&rsquo;API devient la seule mesure de l&rsquo;autonomie réelle du système.</p>
+<p>La suite logique de ce raisonnement — ce que les agents produisent vraiment quand on les met au service de l&rsquo;écriture de logiciel — fait l&rsquo;objet du second article de ce blog.</p>
+  </div>
+
+<section class="sources"><h2>Sources</h2><ol><li><a href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noopener">Anthropic — Building effective agents (déc. 2024)</a><span class="src-domain">anthropic.com</span></li>
+<li><a href="https://cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report" target="_blank" rel="noopener">Google Cloud — 2025 DORA Report: State of AI-Assisted Software Development</a><span class="src-domain">cloud.google.com</span></li>
+<li><a href="https://survey.stackoverflow.co/2025/ai" target="_blank" rel="noopener">Stack Overflow — Developer Survey 2025, section AI</a><span class="src-domain">survey.stackoverflow.co</span></li></ol></section>
+</article>
+
+<footer>
+  <div class="wrap">
+    <p class="mono">Signal · Mohamed Azaddou · 2026 · <a href="../index.html">retour à l'accueil</a></p>
+  </div>
+</footer>
+</body>
+</html>

@@ -9,41 +9,26 @@
 <link rel="alternate" type="application/rss+xml" title="{{site_title}}" href="feed.xml">
 </head>
 <body>
-<header class="hero">
-  <div class="hero__bar">
-    <a class="logo" href="index.html">{{site_title}}<span class="logo__dot"></span></a>
-    <nav class="hero__nav">
-      <a href="feed.xml">RSS</a>
-      <a href="#grid">Flux</a>
-    </nav>
+<header class="masthead">
+  <div class="wrap">
+    <div class="masthead__top">
+      <a class="logo" href="index.html">{{site_title}}<span class="logo__dot"></span></a>
+      <nav class="masthead__nav"><a href="feed.xml">RSS</a><a href="#articles">Articles</a></nav>
+    </div>
+    <h1 class="masthead__title">{{tagline}}</h1>
+    <p class="masthead__meta">{{count}} articles · par {{author}} · {{year}}</p>
   </div>
-  <h1>{{tagline}}</h1>
-  <p class="hero__meta"><span>{{count}} articles</span><span>{{source_count}} sources</span><span>maj {{updated}}</span></p>
 </header>
 
-<div class="toolbar">
-  <input id="q" type="search" placeholder="Rechercher un titre, un mot-clé…" autocomplete="off" aria-label="Rechercher">
-  <div class="chips" id="sources">{{chips}}</div>
-  <div class="chips chips--tags" id="topics">{{topic_chips}}</div>
-  <div class="chips chips--lang" id="langs">
-    <button class="chip is-active" data-lang="">Toutes langues</button>
-    <button class="chip" data-lang="fr">FR</button>
-    <button class="chip" data-lang="en">EN</button>
-  </div>
-</div>
-
-<main>
-  <p class="empty" id="empty" hidden>Aucun article ne correspond. <button id="reset" class="link">Réinitialiser</button></p>
-  <section class="grid" id="grid">
-{{cards}}
-  </section>
-  <div class="more"><button id="loadmore" class="btn" hidden>Charger plus</button></div>
+<main class="wrap" id="articles">
+{{articles}}
 </main>
 
 <footer>
-  <p>{{site_title}} — agrégation automatique de flux RSS. Les textes appartiennent à leurs auteurs, chaque article renvoie à sa source.</p>
-  <p class="mono">{{author}} · {{year}} · <a href="feed.xml">flux RSS</a></p>
+  <div class="wrap">
+    <p>Textes et analyses personnelles. Chaque article cite ses sources, accessibles en bas de page.</p>
+    <p class="mono">{{site_title}} · {{author}} · {{year}} · <a href="feed.xml">flux RSS</a></p>
+  </div>
 </footer>
-<script src="app.js"></script>
 </body>
 </html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}} — {{site_title}}</title>
+<meta name="description" content="{{summary}}">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{summary}}">
+<meta property="article:published_time" content="{{iso_date}}">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="page-article">
+<header class="masthead masthead--slim">
+  <div class="wrap">
+    <div class="masthead__top">
+      <a class="logo" href="../index.html">{{site_title}}<span class="logo__dot"></span></a>
+      <nav class="masthead__nav"><a href="../index.html">← Tous les articles</a></nav>
+    </div>
+  </div>
+</header>
+
+<article class="article wrap">
+  <p class="article__meta">
+    <time datetime="{{iso_date}}">{{date}}</time>
+    <span class="dot"></span>
+    <span>{{minutes}} min de lecture</span>
+  </p>
+  <h1 class="article__title">{{title}}</h1>
+  <p class="article__lede">{{summary}}</p>
+  <div class="article__tags">{{tags}}</div>
+
+  <div class="prose">
+{{content}}
+  </div>
+
+{{sources}}
+</article>
+
+<footer>
+  <div class="wrap">
+    <p class="mono">{{site_title}} · {{author}} · {{year}} · <a href="../index.html">retour à l'accueil</a></p>
+  </div>
+</footer>
+</body>
+</html>

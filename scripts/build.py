@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Génère le site statique dans dist/ à partir de data/posts.json + templates/ + assets/."""
+"""Blog statique : content/articles/*.md + templates/ + assets/ → dist/.
+
+Un article = un fichier Markdown avec un en-tête (title, date, summary, tags, sources).
+Aucune base de données, aucun CMS : le dépôt EST le site.
+"""
 import html
 import json
 import re
@@ -8,137 +12,174 @@ from datetime import datetime
 from pathlib import Path
 from xml.sax.saxutils import escape as xesc
 
+import markdown
+
 ROOT = Path(__file__).resolve().parent.parent
 DIST = ROOT / "dist"
+ARTICLES_DIR = ROOT / "content" / "articles"
 CONFIG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 SITE = CONFIG["site"]
 TEMPLATES = {p.stem: p.read_text(encoding="utf-8") for p in (ROOT / "templates").glob("*.html")}
-POSTS = json.loads((ROOT / "data" / "posts.json").read_text(encoding="utf-8"))
 
 FR_MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet",
              "août", "septembre", "octobre", "novembre", "décembre"]
 
 
-def render(tpl: str, **kw) -> str:
+def render(tpl, **kw):
     out = TEMPLATES[tpl]
     for k, v in kw.items():
         out = out.replace("{{" + k + "}}", str(v))
+    leftover = re.findall(r"\{\{\w+\}\}", out)
+    if leftover:
+        raise SystemExit(f"Placeholder non résolu dans {tpl}: {leftover}")
     return out
 
 
-def fmt_date(iso: str) -> str:
+def e(s):
+    return html.escape(s or "", quote=True)
+
+
+def fmt_date(iso):
     dt = datetime.fromisoformat(iso)
     return f"{dt.day} {FR_MONTHS[dt.month - 1]} {dt.year}"
 
 
-def e(s: str) -> str:
-    return html.escape(s or "", quote=True)
+def parse_article(path: Path):
+    raw = path.read_text(encoding="utf-8")
+    m = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", raw, re.S)
+    if not m:
+        raise SystemExit(f"En-tête manquant (---) dans {path.name}")
+    head, body = m.group(1), m.group(2)
+
+    meta = {"tags": [], "sources": []}
+    current = None
+    for line in head.splitlines():
+        if line.startswith("- "):
+            val = line[2:].strip()
+            if current == "sources":
+                title, _, url = val.partition("|")
+                meta["sources"].append({"title": title.strip(), "url": url.strip()})
+            elif current == "tags":
+                meta["tags"].append(val)
+            continue
+        if ":" in line:
+            key, val = line.split(":", 1)
+            current = key.strip()
+            val = val.strip()
+            if current in ("sources", "tags") and not val:
+                continue
+            meta[current] = val
+
+    if isinstance(meta.get("tags"), str):
+        meta["tags"] = [t.strip() for t in meta["tags"].split(",") if t.strip()]
+
+    words = len(re.findall(r"\w+", body))
+    meta.update({
+        "slug": path.stem,
+        "body": body,
+        "minutes": max(1, round(words / 220)),
+        "words": words,
+    })
+    return meta
 
 
-def card_html(p, **kw) -> str:
-    tags = "".join(f'<span class="tag">{e(t)}</span>' for t in p["tags"][:3])
-    return render(
-        "card",
-        url=kw.get("prefix", "p/") + p["id"] + ".html",
-        title=e(p["title"]),
-        summary=e(p["summary"]),
-        source=e(p["source"]),
-        date=fmt_date(p["date"]),
-        tags=tags,
-        lang=p["lang"],
-        search=e((p["title"] + " " + p["summary"]).lower()),
-        tag_list=e(",".join(p["tags"])),
-        score=p.get("score", 0),
+def domain(url):
+    return re.sub(r"^https?://(www\.)?", "", url).split("/")[0]
+
+
+def md_to_html(text):
+    return markdown.Markdown(extensions=["extra", "sane_lists", "smarty", "toc"]).convert(text)
+
+
+def build_article(a):
+    content = md_to_html(a["body"])
+    sources = "\n".join(
+        f'<li><a href="{e(s["url"])}" target="_blank" rel="noopener">{e(s["title"])}</a>'
+        f'<span class="src-domain">{e(domain(s["url"]))}</span></li>'
+        for s in a["sources"]
     )
-
-
-def build_index():
-    posts = POSTS
-    cards = "\n".join(card_html(p) for p in posts)
-    sources = sorted({p["source"] for p in posts})
-    chips = '<button class="chip is-active" data-src="">Tout</button>' + "".join(
-        f'<button class="chip" data-src="{e(s)}">{e(s)}</button>' for s in sources
+    sources_block = (
+        f'<section class="sources"><h2>Sources</h2><ol>{sources}</ol></section>'
+        if a["sources"] else ""
     )
-    topics = sorted({t for p in posts for t in p["tags"]})
-    topic_chips = "".join(f'<button class="chip chip--tag" data-tag="{e(t)}">#{e(t)}</button>' for t in topics)
-    html_out = render(
+    page = render(
+        "article",
+        title=e(a["title"]),
+        summary=e(a["summary"]),
+        date=fmt_date(a["date"]),
+        iso_date=a["date"],
+        minutes=a["minutes"],
+        tags="".join(f'<span class="tag">{e(t)}</span>' for t in a["tags"]),
+        content=content,
+        sources=sources_block,
+        site_title=e(SITE["title"]),
+        author=e(SITE["author"]),
+        year=str(datetime.now().year),
+    )
+    out = DIST / "articles" / (a["slug"] + ".html")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(page, encoding="utf-8")
+
+
+def build_index(articles):
+    rows = [
+        render(
+            "row",
+            url=f"articles/{a['slug']}.html",
+            title=e(a["title"]),
+            summary=e(a["summary"]),
+            date=fmt_date(a["date"]),
+            iso_date=a["date"],
+            minutes=a["minutes"],
+            tags=" · ".join(a["tags"]),
+        )
+        for a in articles
+    ]
+    page = render(
         "index",
         site_title=e(SITE["title"]),
         tagline=e(SITE["tagline"]),
-        count=str(len(posts)),
-        source_count=str(len(sources)),
-        chips=chips,
-        topic_chips=topic_chips,
-        cards=cards,
-        base_url=SITE["base_url"],
+        articles="\n".join(rows),
+        count=str(len(articles)),
         author=e(SITE["author"]),
         year=str(datetime.now().year),
-        updated=fmt_date(POSTS[0]["date"]) if POSTS else "",
     )
-    (DIST / "index.html").write_text(html_out, encoding="utf-8")
+    (DIST / "index.html").write_text(page, encoding="utf-8")
 
 
-def build_posts():
-    outdir = DIST / "p"
-    outdir.mkdir(parents=True, exist_ok=True)
-    by_tag = {}
-    for p in POSTS:
-        for t in p["tags"]:
-            by_tag.setdefault(t, []).append(p)
-
-    for p in POSTS:
-        related = []
-        for t in p["tags"]:
-            for cand in by_tag.get(t, []):
-                if cand["id"] != p["id"] and cand not in related:
-                    related.append(cand)
-        related = related[:3]
-        page = render(
-            "post",
-            title=e(p["title"]),
-            summary=e(p["summary"]),
-            source=e(p["source"]),
-            date=fmt_date(p["date"]),
-            link=e(p["link"]),
-            tags="".join(f'<span class="tag">{e(t)}</span>' for t in p["tags"]),
-            related="".join(f'<li><a href="{r["id"]}.html">{e(r["title"])}</a> <span>{e(r["source"])}</span></li>' for r in related),
-            site_title=e(SITE["title"]),
-            base_url=SITE["base_url"],
-            author=e(SITE["author"]),
-            year=str(datetime.now().year),
-        )
-        (outdir / (p["id"] + ".html")).write_text(page, encoding="utf-8")
-
-
-def build_feed():
-    items = []
-    for p in POSTS[:40]:
-        items.append(
-            "<item>"
-            f"<title>{xesc(p['title'])}</title>"
-            f"<link>{xesc(SITE['base_url'].rstrip('/') + '/p/' + p['id'] + '.html')}</link>"
-            f"<guid isPermaLink=\"false\">{p['id']}</guid>"
-            f"<pubDate>{datetime.fromisoformat(p['date']).strftime('%a, %d %b %Y %H:%M:%S +0000')}</pubDate>"
-            f"<description>{xesc(p['summary'])}</description>"
-            f"<category>{xesc(p['source'])}</category>"
-            "</item>"
-        )
+def build_feed(articles):
+    items = "".join(
+        "<item>"
+        f"<title>{xesc(a['title'])}</title>"
+        f"<link>{xesc(SITE['base_url'].rstrip('/') + '/articles/' + a['slug'] + '.html')}</link>"
+        f'<guid isPermaLink="false">{a["slug"]}</guid>'
+        f"<pubDate>{datetime.fromisoformat(a['date']).strftime('%a, %d %b %Y 08:00:00 +0000')}</pubDate>"
+        f"<description>{xesc(a['summary'])}</description>"
+        "</item>"
+        for a in articles
+    )
     feed = ('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel>'
-            f"<title>{xesc(SITE['title'])}</title>"
-            f"<link>{xesc(SITE['base_url'])}</link>"
-            f"<description>{xesc(SITE['tagline'])}</description>"
-            f"<language>fr</language>{''.join(items)}</channel></rss>")
+            f"<title>{xesc(SITE['title'])}</title><link>{xesc(SITE['base_url'])}</link>"
+            f"<description>{xesc(SITE['tagline'])}</description><language>fr</language>"
+            f"{items}</channel></rss>")
     (DIST / "feed.xml").write_text(feed, encoding="utf-8")
 
 
 def main():
-    DIST.mkdir(exist_ok=True)
+    if DIST.exists():
+        shutil.rmtree(DIST)
+    DIST.mkdir()
     shutil.copy(ROOT / "assets" / "style.css", DIST / "style.css")
-    shutil.copy(ROOT / "assets" / "app.js", DIST / "app.js")
-    build_index()
-    build_posts()
-    build_feed()
-    print(f"dist/ généré — {len(POSTS)} articles, {len(list((DIST / 'p').glob('*.html')))} pages")
+
+    articles = sorted((parse_article(p) for p in ARTICLES_DIR.glob("*.md")),
+                      key=lambda a: a["date"], reverse=True)
+    for a in articles:
+        build_article(a)
+    build_index(articles)
+    build_feed(articles)
+    print(f"dist/ — {len(articles)} article(s) publié(s)")
+    for a in articles:
+        print(f"  · {a['slug']} ({a['words']} mots, {len(a['sources'])} sources)")
 
 
 if __name__ == "__main__":
