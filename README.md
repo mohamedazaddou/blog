@@ -61,8 +61,21 @@ dist/                  site généré (index.html, articles/, feed.xml)
 - **Structure HTML** : `templates/*.html`, simples marqueurs `{{...}}`.
 - **URL publique** : `config.json` → `site.base_url` (utilisée par le flux RSS).
 
-## Publier
+## Publier — GitHub Pages (gratuit)
 
-`dist/` est un site statique complet : Cloudflare Pages (gratuit, bande passante illimitée),
-Netlify, GitHub Pages, ou n'importe quel serveur — il suffit de copier `dist/`.
-Avec Cloudflare Pages : build command `python3 scripts/build.py`, output directory `dist`.
+Le dépôt contient le workflow `.github/workflows/pages.yml` : à chaque `git push` sur `main`,
+GitHub régénère le site et le publie.
+
+1. Créer un dépôt public sur GitHub (ex. `blog`) — vide, sans README.
+2. `git remote add origin https://github.com/<utilisateur>/blog.git && git push -u origin main`
+3. Dépôt → **Settings → Pages → Source : GitHub Actions**.
+4. Le site sort sur `https://<utilisateur>.github.io/blog/` (ou `https://<utilisateur>.github.io`
+   si le dépôt s'appelle `<utilisateur>.github.io`).
+
+Le nom du dépôt devient le chemin de l'URL : garder des liens relatifs (c'est le cas ici) est ce
+qui permet de publier aussi bien en racine que dans un sous-dossier.
+
+**Nom de domaine** : `*.github.io` est gratuit et suffisant pour commencer. Un domaine à acheter
+(`.fr` ≈ 10 €/an) se branche ensuite via un fichier `CNAME` + enregistrements DNS — sans rien
+changer au code.
+
