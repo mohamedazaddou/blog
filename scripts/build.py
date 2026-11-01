@@ -17,6 +17,7 @@ import markdown
 ROOT = Path(__file__).resolve().parent.parent
 DIST = ROOT / "dist"
 ARTICLES_DIR = ROOT / "content" / "articles"
+PAGES_DIR = ROOT / "content" / "pages"
 CONFIG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 SITE = CONFIG["site"]
 TEMPLATES = {p.stem: p.read_text(encoding="utf-8") for p in (ROOT / "templates").glob("*.html")}
@@ -83,6 +84,16 @@ def parse_article(path: Path):
     return meta
 
 
+LINKEDIN = (SITE.get("links") or {}).get("linkedin", "").strip()
+
+
+def linkedin_nav(prefix: str = "") -> str:
+    if not LINKEDIN:
+        return ""
+    return (f'<a class="ext" href="{e(LINKEDIN)}" target="_blank" rel="noopener">'
+            f'LinkedIn &#8599;</a>')
+
+
 def domain(url):
     return re.sub(r"^https?://(www\.)?", "", url).split("/")[0]
 
@@ -115,6 +126,8 @@ def build_article(a):
         site_title=e(SITE["title"]),
         author=e(SITE["author"]),
         year=str(datetime.now().year),
+        linkedin=linkedin_nav(),
+        about_url="../about.html",
     )
     out = DIST / "articles" / (a["slug"] + ".html")
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -143,8 +156,38 @@ def build_index(articles):
         count=str(len(articles)),
         author=e(SITE["author"]),
         year=str(datetime.now().year),
+        linkedin=linkedin_nav(),
+        about_url=("about.html" if (PAGES_DIR / "about.md").exists() else ""),
     )
     (DIST / "index.html").write_text(page, encoding="utf-8")
+
+
+def build_pages():
+    built = []
+    for path in sorted(PAGES_DIR.glob("*.md")):
+        raw = path.read_text(encoding="utf-8")
+        m = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", raw, re.S)
+        if not m:
+            raise SystemExit(f"En-tête manquant (---) dans pages/{path.name}")
+        head, body = m.group(1), m.group(2)
+        meta = {}
+        for line in head.splitlines():
+            if ":" in line:
+                k, v = line.split(":", 1)
+                meta[k.strip()] = v.strip()
+        page = render(
+            "page",
+            title=e(meta.get("title", path.stem)),
+            summary=e(meta.get("summary", "")),
+            content=md_to_html(body),
+            site_title=e(SITE["title"]),
+            author=e(SITE["author"]),
+            year=str(datetime.now().year),
+            linkedin=linkedin_nav(),
+        )
+        (DIST / (path.stem + ".html")).write_text(page, encoding="utf-8")
+        built.append(path.stem)
+    return built
 
 
 def build_feed(articles):
@@ -176,8 +219,9 @@ def main():
     for a in articles:
         build_article(a)
     build_index(articles)
+    pages = build_pages()
     build_feed(articles)
-    print(f"dist/ — {len(articles)} article(s) publié(s)")
+    print(f"dist/ — {len(articles)} article(s) publié(s), {len(pages)} page(s)")
     for a in articles:
         print(f"  · {a['slug']} ({a['words']} mots, {len(a['sources'])} sources)")
 

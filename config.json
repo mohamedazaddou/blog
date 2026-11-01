@@ -3,6 +3,9 @@
     "title": "Signal",
     "tagline": "Notes sur l'IA, les agents et l'ingénierie logicielle",
     "author": "Mohamed Azaddou",
-    "base_url": "https://mohamedazaddou.github.io/blog"
+    "base_url": "https://mohamedazaddou.github.io/blog",
+    "links": {
+      "linkedin": ""
+    }
   }
 }
