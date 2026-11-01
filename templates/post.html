@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}} — {{site_title}}</title>
+<meta name="description" content="{{summary}}">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="page-post">
+<header class="hero hero--slim">
+  <div class="hero__bar">
+    <a class="logo" href="../index.html">{{site_title}}<span class="logo__dot"></span></a>
+    <nav class="hero__nav"><a href="../index.html">← Flux</a></nav>
+  </div>
+</header>
+
+<article class="post">
+  <p class="post__meta"><span class="src">{{source}}</span><time>{{date}}</time></p>
+  <h1>{{title}}</h1>
+  <p class="post__summary">{{summary}}</p>
+  <div class="post__tags">{{tags}}</div>
+  <a class="btn btn--primary" href="{{link}}" target="_blank" rel="noopener">Lire l'article complet ↗</a>
+  <p class="post__link mono">{{link}}</p>
+
+  <section class="related">
+    <h2>À lire aussi</h2>
+    <ul>{{related}}</ul>
+  </section>
+</article>
+
+<footer>
+  <p class="mono">{{site_title}} · {{author}} · {{year}} · <a href="../index.html">retour au flux</a></p>
+</footer>
+</body>
+</html>
