@@ -3,9 +3,9 @@ title: À propos
 summary: Qui écrit ici, pourquoi, et avec quelles règles.
 ---
 
-Ce blog est un carnet de notes tenu par **Mohamed Azaddou**, basé à Lyon. J'y écris sur l'IA, les agents logiciels et l'ingénierie — les sujets que je manipule au quotidien et ceux que j'essaie de comprendre en écrivant.
+Ce blog est un carnet de notes tenu par **Mohamed Azaddou**, ingénieur en informatique. J'y écris sur l'IA, les agents logiciels et l'ingénierie — les sujets que je manipule au quotidien et ceux que j'essaie de comprendre en écrivant.
 
-Professionnellement, je travaille dans le bâtiment, sur l'isolation thermique par l'extérieur : appels d'offres, chiffrage, suivi de chantier. C'est un métier où l'erreur se paie en euros et en délais, ce qui rend les promesses de l'IA générative particulièrement intéressantes à examiner de près — et parfois à relativiser.
+Mon métier, c'est le logiciel : concevoir, écrire et maintenir des systèmes qui doivent tourner. C'est précisément ce qui rend les promesses de l'IA générative intéressantes à examiner de près : je vois ce que ces outils produisent sur du code réel, dans des projets qui ont une histoire, une dette et des utilisateurs.
 
 ## Pourquoi ce blog
 
