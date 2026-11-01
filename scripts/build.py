@@ -212,7 +212,10 @@ def main():
     if DIST.exists():
         shutil.rmtree(DIST)
     DIST.mkdir()
-    shutil.copy(ROOT / "assets" / "style.css", DIST / "style.css")
+    for asset in ("style.css", "favicon.svg", "apple-touch-icon.png"):
+        src = ROOT / "assets" / asset
+        if src.exists():
+            shutil.copy(src, DIST / asset)
 
     articles = sorted((parse_article(p) for p in ARTICLES_DIR.glob("*.md")),
                       key=lambda a: a["date"], reverse=True)
