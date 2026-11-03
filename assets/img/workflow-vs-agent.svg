@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" role="img" aria-labelledby="t1 d1">
+  <title id="t1">Workflow et agent : deux graphes d'exécution</title>
+  <desc id="d1">À gauche, un workflow : une chaîne fixe entrée, LLM, outil, LLM, sortie. À droite, un agent : une boucle entre le modèle et les outils, dont le chemin n'est pas connu à l'avance.</desc>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5d656f"/>
+    </marker>
+    <marker id="arA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6ef2bd"/>
+    </marker>
+    <style>
+      .lbl { font-family: Inter, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 15px; fill: #e7eaee; }
+      .sm  { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; letter-spacing: .12em; fill: #8b939d; }
+      .cap { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11px; fill: #5d656f; }
+      .box { fill: #0d0f12; stroke: #1d2127; stroke-width: 1.2; }
+      .boxA { fill: #0f1a16; stroke: #2c5a49; stroke-width: 1.2; }
+      .edge { stroke: #5d656f; stroke-width: 1.4; fill: none; }
+      .edgeA { stroke: #6ef2bd; stroke-width: 1.4; fill: none; }
+    </style>
+  </defs>
+
+  <rect width="900" height="470" fill="#08090b"/>
+
+  <!-- panneau gauche -->
+  <text class="sm" x="40" y="42">WORKFLOW</text>
+  <text class="cap" x="40" y="62">graphe connu à l'avance</text>
+
+  <rect class="box" x="120" y="88" width="200" height="40" rx="6"/>
+  <text class="lbl" x="220" y="113" text-anchor="middle">entrée</text>
+
+  <rect class="box" x="120" y="158" width="200" height="44" rx="6"/>
+  <text class="lbl" x="220" y="185" text-anchor="middle">LLM</text>
+
+  <rect class="box" x="120" y="232" width="200" height="44" rx="6"/>
+  <text class="lbl" x="220" y="259" text-anchor="middle">outil</text>
+
+  <rect class="box" x="120" y="306" width="200" height="44" rx="6"/>
+  <text class="lbl" x="220" y="333" text-anchor="middle">LLM</text>
+
+  <rect class="box" x="120" y="380" width="200" height="40" rx="6"/>
+  <text class="lbl" x="220" y="405" text-anchor="middle">sortie</text>
+
+  <path class="edge" d="M220,128 L220,154" marker-end="url(#ar)"/>
+  <path class="edge" d="M220,202 L220,228" marker-end="url(#ar)"/>
+  <path class="edge" d="M220,276 L220,302" marker-end="url(#ar)"/>
+  <path class="edge" d="M220,350 L220,376" marker-end="url(#ar)"/>
+
+  <text class="cap" x="240" y="146">étape 1</text>
+  <text class="cap" x="240" y="220">étape 2</text>
+  <text class="cap" x="240" y="294">étape 3</text>
+  <text class="cap" x="240" y="368">étape 4</text>
+
+  <!-- séparateur -->
+  <line x1="450" y1="40" x2="450" y2="430" stroke="#1d2127" stroke-width="1"/>
+
+  <!-- panneau droit -->
+  <text class="sm" x="490" y="42">AGENT</text>
+  <text class="cap" x="490" y="62">graphe découvert à l'exécution</text>
+
+  <rect class="box" x="560" y="88" width="200" height="40" rx="6"/>
+  <text class="lbl" x="660" y="113" text-anchor="middle">objectif</text>
+
+  <rect class="boxA" x="560" y="176" width="200" height="56" rx="8"/>
+  <text class="lbl" x="660" y="200" text-anchor="middle">LLM</text>
+  <text class="cap" x="660" y="218" text-anchor="middle">décide de la prochaine étape</text>
+
+  <rect class="box" x="560" y="300" width="200" height="56" rx="8"/>
+  <text class="lbl" x="660" y="324" text-anchor="middle">outils</text>
+  <text class="cap" x="660" y="342" text-anchor="middle">lecture, recherche, exécution</text>
+
+  <path class="edge" d="M660,128 L660,172" marker-end="url(#ar)"/>
+  <path class="edgeA" d="M600,232 L600,296" marker-end="url(#arA)"/>
+  <path class="edgeA" d="M720,296 L720,236" marker-end="url(#arA)"/>
+  <text class="cap" x="586" y="268" text-anchor="end">appel</text>
+  <text class="cap" x="734" y="268">résultat</text>
+
+  <path class="edge" d="M760,220 C822,220 822,192 762,192" fill="none" stroke-dasharray="4 4" marker-end="url(#ar)"/>
+  <text class="cap" x="828" y="208" text-anchor="middle">boucle</text>
+
+  <rect class="box" x="560" y="392" width="200" height="40" rx="6"/>
+  <text class="lbl" x="660" y="417" text-anchor="middle">sortie</text>
+  <path class="edge" d="M660,356 L660,388" marker-end="url(#ar)"/>
+
+  <text class="cap" x="40" y="452">Le nombre d'étapes est fixé par le code.</text>
+  <text class="cap" x="490" y="452">Le nombre d'étapes est décidé par le modèle.</text>
+</svg>

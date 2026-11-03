@@ -13,6 +13,11 @@ sources:
 
 Trois chiffres circulent sur les agents qui écrivent du code : **+55 %** de vitesse, **−19 %** de productivité, et **1 206 enregistrements** effacés en production. Ils ne se contredisent pas : ils décrivent trois situations différentes. Le problème, c'est que le débat public les traite comme s'ils parlaient de la même chose.
 
+<figure>
+  <div class="fig-scroll"><img src="../img/trois-chiffres-productivite.svg" alt="Trois barres : plus 55 pour cent en laboratoire, plus 20 pour cent de gain perçu, moins 19 pour cent de temps mesuré sur des tickets réels."></div>
+  <figcaption><b>Figure 1</b> — Les deux derniers chiffres viennent de la même étude, avec les mêmes développeurs : l'écart de 39 points est l'écart entre le ressenti et la mesure.</figcaption>
+</figure>
+
 ## Le « +55 % » : une expérience de laboratoire, pas un métier
 
 En septembre 2022, GitHub publie une étude contrôlée sur Copilot : des développeurs recrutés pour implémenter un serveur HTTP en JavaScript, répartis en deux groupes, avec et sans assistance [2]. Résultat : 55 % plus rapide avec Copilot. Le chiffre est exact et l'étude est sérieuse. Il porte simplement sur une tâche **verte, bornée et unique** : pas de code existant à comprendre, pas de dette technique, pas de contrainte d'exploitation, pas de réunion à 14 h.

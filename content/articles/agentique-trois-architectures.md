@@ -20,6 +20,11 @@ La différence n'est pas sémantique, elle est structurelle :
 - dans un workflow, **le graphe d'exécution est connu à l'avance** : je peux le tester, le borner, prévoir son coût maximal ;
 - dans un agent, **le graphe est découvert à l'exécution** : je ne peux garantir que la boucle d'outils, les bornes de temps et le format de sortie.
 
+<figure>
+  <div class="fig-scroll"><img src="../img/workflow-vs-agent.svg" alt="Deux schémas côte à côte : à gauche un workflow en chaîne fixe entrée, LLM, outil, LLM, sortie ; à droite un agent en boucle entre le LLM et les outils."></div>
+  <figcaption><b>Figure 1</b> — La même brique (un LLM, des outils) produit deux systèmes différents selon que le graphe est écrit dans le code ou décidé à l'exécution.</figcaption>
+</figure>
+
 Anthropic ajoute une recommandation qui a mal vieilli dans le discours ambiant : commencer par la solution la plus simple possible, et n'augmenter la complexité qu'en cas de besoin. Pour beaucoup d'applications, un appel unique au modèle enrichi de contexte suffit [1]. Autrement dit : la plupart des produits qui se disent « agents » sont des workflows, et c'est très bien ainsi.
 
 ## Pourquoi la confusion coûte cher

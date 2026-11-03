@@ -216,6 +216,9 @@ def main():
         src = ROOT / "assets" / asset
         if src.exists():
             shutil.copy(src, DIST / asset)
+    img_src = ROOT / "assets" / "img"
+    if img_src.exists():
+        shutil.copytree(img_src, DIST / "img")
 
     articles = sorted((parse_article(p) for p in ARTICLES_DIR.glob("*.md")),
                       key=lambda a: a["date"], reverse=True)

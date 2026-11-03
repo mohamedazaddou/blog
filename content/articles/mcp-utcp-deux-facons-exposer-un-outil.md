@@ -32,6 +32,11 @@ UTCP prend le problème par l'autre bout. Au lieu d'envelopper l'outil, on publi
 
 Le projet revendique une filiation avec OpenAPI : une spécification existante se convertit en manuel sans modifier l'API, et un point d'entrée `GET /utcp` suffit à rendre un service découvrable [5]. La promesse : zéro serveur à écrire, zéro processus à superviser, zéro saut réseau supplémentaire.
 
+<figure>
+  <div class="fig-scroll"><img src="../img/mcp-vs-utcp.svg" alt="Deux schémas : MCP fait passer l'appel par un serveur intermédiaire en JSON-RPC ; UTCP fait lire un manuel JSON à l'agent puis appelle l'API directement."></div>
+  <figcaption><b>Figure 1</b> — MCP normalise le point de passage ; UTCP le supprime et décrit l'appel natif. Le second déplace la complexité vers le client plutôt que de la faire disparaître.</figcaption>
+</figure>
+
 ## Ce que la comparaison officielle ne dit pas
 
 Le tableau comparatif le plus cité vient du site d'UTCP lui-même : c'est un plaidoyer [6]. Il est exact sur l'architecture — un serveur et un saut réseau en moins — mais présente la latence et la maintenance comme des coûts intrinsèques de MCP, alors qu'ils dépendent de ce que l'on expose. Envelopper une API interne mal documentée coûte cher ; exposer un service déjà propre coûte peu.
@@ -39,6 +44,11 @@ Le tableau comparatif le plus cité vient du site d'UTCP lui-même : c'est un pl
 Deux critiques du tableau ont d'ailleurs mal vieilli. La première visait la gestion de session : la révision 2026-07-28 du protocole est stateless, avec négociation de capacités par requête [1]. La seconde visait l'impossibilité de parler d'autres protocoles : MCP définit désormais un mécanisme de transports personnalisés, à condition de préserver le format JSON-RPC et le modèle de métadonnées [2].
 
 ## Le coût ne disparaît pas, il change de camp
+
+<figure>
+  <div class="fig-scroll"><img src="../img/deplacement-du-cout.svg" alt="Deux barres empilées : avec MCP la complexité est majoritairement côté serveur, avec UTCP elle bascule côté client."></div>
+  <figcaption><b>Figure 2</b> — Le déplacement du coût : ce qu'UTCP retire au serveur réapparaît dans le client, sous forme d'authentifications multiples et de validation des réponses.</figcaption>
+</figure>
 
 C'est le point que je retiens de la lecture des deux spécifications. UTCP ne supprime pas la complexité de l'intégration : il la déplace du serveur vers le client. Le client doit gérer plusieurs méthodes d'authentification, la substitution de variables, la validation des réponses et la traduction des erreurs natives [7]. Le projet le reconnaît explicitement : les points d'entrée de découverte deviennent des cibles, et la substitution de variables introduit un risque d'injection [7].
 

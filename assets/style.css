@@ -211,6 +211,43 @@ main { padding: clamp(24px, 4vw, 44px) 0 10px; }
 
 .prose hr { border: 0; border-top: 1px solid var(--line); margin: 2.4em 0; }
 
+/* ---------- figures ---------- */
+.prose figure {
+  margin: 2.2em -60px;
+  padding: 0;
+}
+
+/* la colonne de texte fait ~700px ; les figures prennent la largeur du conteneur */
+@media (max-width: 900px) {
+  .prose figure { margin-inline: 0; }
+}
+.prose .fig-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+.prose .fig-scroll img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+@media (max-width: 700px) {
+  .prose .fig-scroll img { min-width: 620px; }
+}
+.prose figcaption {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--dim);
+  letter-spacing: .01em;
+}
+.prose figcaption b {
+  color: var(--muted);
+  font-weight: 600;
+}
+
 /* ---------- sources ---------- */
 .sources {
   margin-top: clamp(40px, 6vw, 64px);
