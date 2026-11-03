@@ -380,6 +380,8 @@ def main():
     print(f"dist/ — {len(articles)} article(s) publié(s), {len(pages)} page(s)")
     for a in articles:
         print(f"  · {a['slug']} ({a['words']} mots, {len(a['sources'])} sources)")
+        if not (OG_DIR / f"{a['slug']}.png").exists():
+            print(f"    ! carte de partage absente — lancer python3 scripts/og.py")
 
 
 if __name__ == "__main__":
