@@ -9,52 +9,61 @@ sources:
 - Stack Overflow — Developer Survey 2025, section AI | https://survey.stackoverflow.co/2025/ai
 ---
 
-On ne vend plus des modèles, on vend des « agents ». Le mot est devenu un argument commercial : il suffit qu'une application appelle un LLM deux fois de suite pour qu'on parle d'« agent autonome ». Derrière ce vocabulaire unique se cachent pourtant des systèmes aux propriétés très différentes — et surtout, aux modes de panne incompatibles.
+On ne vend plus des modèles, on vend des « agents ». Le mot est devenu un argument commercial : il suffit qu'une application appelle un LLM deux fois de suite pour qu'on parle d'« agent autonome ». Derrière ce vocabulaire unique se cachent des systèmes aux propriétés très différentes, et surtout aux modes de panne incompatibles.
 
-## Le mot recouvre deux choses distinctes
+## Le mot recouvre deux choses
 
-Anthropic a posé la distinction la plus utile dès décembre 2024, dans *Building effective agents* : un **workflow** est un système où les LLM et les outils sont orchestrés par des chemins de code prédéfinis ; un **agent**, en revanche, est un système où le modèle dirige lui-même son processus et l'usage de ses outils, en gardant la main sur la manière d'accomplir la tâche [1].
+Anthropic a posé la distinction la plus utile dès décembre 2024, dans *Building effective agents* : un workflow est un système où les LLM et les outils sont orchestrés par des chemins de code prédéfinis ; un agent est un système où le modèle dirige lui-même son processus et l'usage de ses outils, en gardant la main sur la manière d'accomplir la tâche [1].
 
-La différence n'est pas sémantique, elle est structurelle :
-
-- dans un workflow, **le graphe d'exécution est connu à l'avance** : je peux le tester, le borner, prévoir son coût maximal ;
-- dans un agent, **le graphe est découvert à l'exécution** : je ne peux garantir que la boucle d'outils, les bornes de temps et le format de sortie.
+La différence n'est pas sémantique, elle est structurelle. Dans un workflow, le graphe d'exécution est connu à l'avance : je peux le tester, le borner, prévoir son coût maximal. Dans un agent, le graphe est découvert à l'exécution : je ne peux garantir que la boucle d'outils, les bornes de temps et le format de sortie.
 
 <figure>
   <div class="fig-scroll"><img src="../img/workflow-vs-agent.svg" alt="Deux schémas côte à côte : à gauche un workflow en chaîne fixe entrée, LLM, outil, LLM, sortie ; à droite un agent en boucle entre le LLM et les outils."></div>
   <figcaption><b>Figure 1</b> — La même brique (un LLM, des outils) produit deux systèmes différents selon que le graphe est écrit dans le code ou décidé à l'exécution.</figcaption>
 </figure>
 
-Anthropic ajoute une recommandation qui a mal vieilli dans le discours ambiant : commencer par la solution la plus simple possible, et n'augmenter la complexité qu'en cas de besoin. Pour beaucoup d'applications, un appel unique au modèle enrichi de contexte suffit [1]. Autrement dit : la plupart des produits qui se disent « agents » sont des workflows, et c'est très bien ainsi.
+Anthropic ajoute une recommandation qui a mal vieilli dans le discours ambiant : commencer par la solution la plus simple possible, et n'augmenter la complexité qu'en cas de besoin. Pour beaucoup d'applications, un appel unique au modèle enrichi de contexte suffit [1]. La plupart des produits qui se disent « agents » sont des workflows, et c'est très bien ainsi.
+
+La boucle que ce papier dessine reste la meilleure représentation du minimum vital : un appel au modèle, une action sur l'environnement, un retour, une décision de continuer ou de s'arrêter.
+
+<figure>
+  <div class="fig-scroll"><img src="../img/anthropic-boucle-agent.png" alt="Schéma d'Anthropic : un appel LLM relié à un humain par une flèche en pointillés, une boucle action vers l'environnement et retour vers le LLM, et une sortie Stop."></div>
+  <figcaption><b>Figure 2</b> — La boucle d'un agent dans sa version minimale. Source : Anthropic, <i>Building effective agents</i> (décembre 2024) [1].</figcaption>
+</figure>
 
 ## Pourquoi la confusion coûte cher
 
-Choisir un agent là où un workflow suffirait se paie sur quatre plans : la latence (boucle d'outils = plusieurs allers-retours), le coût par requête (variable, non borné sans garde-fou), la testabilité (une sortie non déterministe se teste par échantillonnage, pas par assertion), et l'observabilité (il faut tracer chaque décision d'outil pour comprendre un échec).
+Choisir un agent là où un workflow suffirait se paie sur quatre plans. La latence, d'abord, puisqu'une boucle d'outils multiplie les allers-retours. Le coût par requête ensuite, variable et non borné sans garde-fou. La testabilité, car une sortie non déterministe se teste par échantillonnage, pas par assertion. Et l'observabilité : il faut tracer chaque décision d'outil pour comprendre un échec.
 
-Inversement, imposer un workflow à un problème ouvert — navigation dans un dépôt inconnu, correction d'un bug dont on ignore la cause — revient à écrire le chemin en dur et à le maintenir à chaque cas nouveau. L'agent existe pour ces cas-là : quand l'espace des chemins possibles est trop large pour être cartographié.
+Inversement, imposer un workflow à un problème ouvert, comme naviguer dans un dépôt inconnu ou corriger un bug dont on ignore la cause, revient à écrire le chemin en dur et à le maintenir à chaque cas nouveau. L'agent existe pour ces cas-là : quand l'espace des chemins possibles est trop large pour être cartographié.
 
 > La bonne question n'est jamais « agent ou pas agent ? », mais « où est le dernier point de contrôle humain, et que se passe-t-il s'il est franchi par erreur ? »
 
-## Ce que les données terrain disent du phénomène
+## Ce que les données terrain disent du décalage
 
-Trois sources récentes donnent la mesure du décalage entre le discours et l'usage réel.
+Trois sources récentes donnent la mesure de l'écart entre le discours et l'usage réel.
 
-**L'adoption est massive.** Le rapport DORA 2025, construit sur près de 5 000 professionnels, mesure 90 % d'usage de l'IA au travail et plus de 80 % de personnes qui déclarent une productivité accrue [2]. Ce n'est plus un marché émergent, c'est l'état par défaut.
+L'adoption est massive. Le rapport DORA 2025, construit sur près de 5 000 professionnels, mesure 90 % d'usage de l'IA au travail et plus de 80 % de personnes qui déclarent une productivité accrue [2]. Ce n'est plus un marché émergent, c'est l'état par défaut.
 
-**La confiance, elle, recule.** Dans l'enquête Stack Overflow 2025, 46 % des développeurs déclarent se méfier activement de l'exactitude des outils d'IA, contre 33 % qui leur font confiance, et 3 % seulement déclarent une confiance élevée [3]. Les profils les plus expérimentés sont les plus prudents : 20 % de méfiance forte chez eux [3]. Ce n'est pas un rejet — c'est un ajustement du niveau de vérification.
+La confiance, elle, recule. Dans l'enquête Stack Overflow 2025, 46 % des développeurs déclarent se méfier activement de l'exactitude des outils d'IA, contre 33 % qui leur font confiance, et 3 % seulement une confiance élevée [3]. Les profils les plus expérimentés sont les plus prudents, avec 20 % de méfiance forte. Ce n'est pas un rejet, c'est un ajustement du niveau de vérification.
 
-**L'effet amplificateur.** La conclusion centrale de DORA 2025 est que l'IA n'améliore pas une équipe, elle amplifie ce qui existe déjà : les équipes qui ont des tests automatisés, du versioning propre et des boucles de retour rapides gagnent en débit ; celles qui n'en ont pas voient surtout leur instabilité augmenter [2]. L'IA n'est donc pas un correctif d'organisation, c'est un multiplicateur.
+L'effet amplificateur, enfin, qui est la conclusion centrale de DORA 2025. L'IA n'améliore pas une équipe, elle amplifie ce qui existe déjà : les équipes qui ont des tests automatisés, du versioning propre et des boucles de retour rapides gagnent en débit ; celles qui n'en ont pas voient surtout leur instabilité augmenter [2]. L'IA n'est pas un correctif d'organisation, c'est un multiplicateur.
 
 ## Trois questions avant de dire « agent »
 
-Si vous devez trancher pour un projet, ces trois filtres suffisent dans la majorité des cas.
+Si vous devez trancher pour un projet, ces trois filtres suffisent dans la majorité des cas. Ce n'est pas une grille d'audit, juste l'ordre dans lequel je pose les questions quand un chef de produit m'annonce un agent.
 
-1. **L'action est-elle réversible ?** Lecture de fichiers, recherche, génération de patch : réversible. Suppression de données, envoi d'e-mail, paiement, `git push --force` : irréversible, donc workflow obligatoire avec validation explicite avant l'action.
-2. **Le chemin est-il connaissable à l'avance ?** Si oui, écrivez-le. Un agent qui redécouvre à chaque exécution un chemin que vous connaissez déjà est un générateur de latence et de facture.
-3. **Que m'apprend un échec ?** Sur un workflow, la trace est lisible : l'étape N a échoué. Sur un agent, l'échec est une trajectoire ; sans journalisation des appels d'outils, il est indébogable — et donc inexploitable en production.
+<figure>
+  <div class="fig-scroll"><img src="../img/trois-filtres-agent.svg" alt="Trois questions successives avec leur conséquence : action réversible ou validation humaine, chemin connu ou graphe écrit, échec traçable ou instrumentation préalable."></div>
+  <figcaption><b>Figure 3</b> — Une réponse négative n'interdit pas l'agent : elle désigne ce qu'il faut construire avant lui.</figcaption>
+</figure>
+
+1. L'action est-elle réversible ? Lecture de fichiers, recherche, génération de patch : réversible. Suppression de données, envoi d'e-mail, paiement, `git push --force` : irréversible, donc workflow obligatoire avec validation explicite avant l'action.
+2. Le chemin est-il connaissable à l'avance ? Si oui, écrivez-le. Un agent qui redécouvre à chaque exécution un chemin que vous connaissez déjà est un générateur de latence et de facture.
+3. Que m'apprend un échec ? Sur un workflow, la trace est lisible : l'étape N a échoué. Sur un agent, l'échec est une trajectoire ; sans journalisation des appels d'outils, il est indébogable, donc inexploitable en production.
 
 ## Ce que je retiens
 
-« Agentique » ne désigne pas un niveau d'intelligence, mais une **répartition du contrôle** : qui décide de la prochaine étape, du code ou du modèle. Tant que cette frontière n'est pas explicite dans l'architecture, le mot reste un argument marketing, et la facture d'API devient la seule mesure de l'autonomie réelle du système.
+« Agentique » ne désigne pas un niveau d'intelligence, mais une répartition du contrôle : qui décide de la prochaine étape, du code ou du modèle. Tant que cette frontière n'est pas explicite dans l'architecture, le mot reste un argument marketing et la facture d'API devient la seule mesure de l'autonomie réelle du système.
 
-La suite logique de ce raisonnement — ce que les agents produisent vraiment quand on les met au service de l'écriture de logiciel — fait l'objet du second article de ce blog.
+Ce que les agents produisent vraiment quand on les met au service de l'écriture de logiciel fait l'objet du [second article de ce blog](agents-logiciel-retours-experience.html).

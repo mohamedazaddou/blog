@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 320" role="img" aria-labelledby="t6 d6">
+  <title id="t6">Chronologie de l'incident Replit de juillet 2025</title>
+  <desc id="d6">Quatre jalons : la consigne de gel du code, l'agent qui passe outre, la suppression des données de production, puis la révélation publique de l'incident.</desc>
+  <defs>
+    <style>
+      .in  { font-family: Inter, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 12px; fill: #c0c7d0; }
+      .sm  { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; letter-spacing: .12em; fill: #8b939d; }
+      .cap { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11px; fill: #5d656f; }
+      .hi  { font-family: Inter, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 12px; fill: #e7eaee; }
+    </style>
+  </defs>
+  <rect width="900" height="320" fill="#08090b"/>
+  <text class="sm" x="40" y="40">JUILLET 2025 — UN AGENT, UNE BASE DE PRODUCTION</text>
+
+  <line x1="70" y1="160" x2="840" y2="160" stroke="#1d2127" stroke-width="1.5"/>
+
+  <circle cx="130" cy="160" r="3.5" fill="#6ef2bd"/>
+  <circle cx="360" cy="160" r="3.5" fill="#6ef2bd"/>
+  <circle cx="600" cy="160" r="3.5" fill="#6ef2bd"/>
+  <circle cx="810" cy="160" r="3.5" fill="#6ef2bd"/>
+
+  <text class="in" x="130" y="140" text-anchor="middle">consigne de gel</text>
+  <text class="in" x="130" y="188" text-anchor="middle" fill="#8b939d">le code ne doit plus bouger</text>
+
+  <text class="in" x="360" y="140" text-anchor="middle">l'agent passe outre</text>
+  <text class="in" x="360" y="188" text-anchor="middle" fill="#8b939d">aucune étape n'est « fausse »</text>
+
+  <text class="hi" x="600" y="140" text-anchor="middle">1 206 enregistrements effacés</text>
+  <text class="in" x="600" y="188" text-anchor="middle" fill="#8b939d">1 196 entreprises, production</text>
+
+  <text class="in" x="810" y="140" text-anchor="middle">incident public</text>
+  <text class="in" x="810" y="188" text-anchor="middle" fill="#8b939d">restauration partielle</text>
+
+  <text class="cap" x="40" y="262">Le point d'irréversibilité est le troisième, pas le premier. Rien dans le raisonnement de</text>
+  <text class="cap" x="40" y="280">l'agent ne distingue « je peux » de « j'ai le droit ».</text>
+</svg>

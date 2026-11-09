@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-labelledby="t7 d7">
+  <title id="t7">Trois filtres pour décider entre workflow et agent</title>
+  <desc id="d7">Trois questions successives : l'action est-elle réversible, le chemin est-il connu d'avance, un échec laisse-t-il une trace lisible. Chaque réponse négative renvoie vers un workflow, un découpage du chemin, ou l'instrumentation avant toute autonomie.</desc>
+  <defs>
+    <style>
+      .q   { font-family: Inter, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 13.5px; fill: #e7eaee; }
+      .a   { font-family: Inter, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 12px; fill: #c0c7d0; }
+      .sm  { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; letter-spacing: .12em; fill: #8b939d; }
+      .cap { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11px; fill: #5d656f; }
+      .tag { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; fill: #6ef2bd; }
+    </style>
+  </defs>
+  <rect width="900" height="460" fill="#08090b"/>
+  <text class="sm" x="40" y="40">TROIS QUESTIONS AVANT DE DIRE « AGENT »</text>
+
+  <!-- Q1 -->
+  <rect x="40" y="66" width="420" height="58" rx="4" fill="#15181d" stroke="#3a424c"/>
+  <text class="q" x="60" y="100">1. L'action est-elle réversible ?</text>
+  <line x1="460" y1="95" x2="520" y2="95" stroke="#3a424c" stroke-width="1.2"/>
+  <polygon points="520,95 512,91 512,99" fill="#3a424c"/>
+  <text class="tag" x="470" y="84">NON</text>
+  <rect x="526" y="66" width="334" height="58" rx="4" fill="#0f1a16" stroke="#2c5a49"/>
+  <text class="a" x="544" y="92">workflow + validation humaine</text>
+  <text class="a" x="544" y="112" fill="#8b939d">écrire, publier, envoyer, supprimer</text>
+
+  <!-- Q2 -->
+  <rect x="40" y="156" width="420" height="58" rx="4" fill="#15181d" stroke="#3a424c"/>
+  <text class="q" x="60" y="190">2. Le chemin est-il connu d'avance ?</text>
+  <line x1="460" y1="185" x2="520" y2="185" stroke="#3a424c" stroke-width="1.2"/>
+  <polygon points="520,185 512,181 512,189" fill="#3a424c"/>
+  <text class="tag" x="470" y="174">OUI</text>
+  <rect x="526" y="156" width="334" height="58" rx="4" fill="#0f1a16" stroke="#2c5a49"/>
+  <text class="a" x="544" y="182">écrivez le graphe</text>
+  <text class="a" x="544" y="202" fill="#8b939d">un agent qui redécouvre coûte cher</text>
+
+  <!-- Q3 -->
+  <rect x="40" y="246" width="420" height="58" rx="4" fill="#15181d" stroke="#3a424c"/>
+  <text class="q" x="60" y="280">3. Un échec laisse-t-il une trace lisible ?</text>
+  <line x1="460" y1="275" x2="520" y2="275" stroke="#3a424c" stroke-width="1.2"/>
+  <polygon points="520,275 512,271 512,279" fill="#3a424c"/>
+  <text class="tag" x="470" y="264">NON</text>
+  <rect x="526" y="246" width="334" height="58" rx="4" fill="#15181d" stroke="#3a424c"/>
+  <text class="a" x="544" y="272">instrumentez avant d'autonomiser</text>
+  <text class="a" x="544" y="292" fill="#8b939d">sinon l'incident est indébogable</text>
+
+  <!-- sortie -->
+  <rect x="40" y="352" width="820" height="52" rx="4" fill="#0f1a16" stroke="#2c5a49"/>
+  <text class="a" x="60" y="383">Si les trois réponses laissent passer : agent, avec boucle bornée, budget et dernier point de contrôle explicite.</text>
+
+  <text class="cap" x="40" y="438">Une réponse négative n'interdit pas l'agent : elle désigne l'endroit à construire avant lui.</text>
+</svg>
