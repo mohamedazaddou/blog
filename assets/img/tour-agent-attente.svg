@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 330" role="img" aria-labelledby="t11 d11">
+  <title id="t11">Un tour d'agent : le contexte reste résident pendant l'appel d'outil</title>
+  <desc id="d11">Frise d'un tour : préremplissage, appel d'outil, génération, nouvel appel d'outil. Le KV cache reste alloué du début à la fin, alors que le GPU ne calcule que pendant deux segments.</desc>
+  <defs>
+    <style>
+      .in  { font-family: Inter, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 11.5px; fill: #c0c7d0; }
+      .lbl { font-family: Inter, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 12.5px; fill: #e7eaee; }
+      .sm  { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; letter-spacing: .12em; fill: #8b939d; }
+      .cap { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; fill: #5d656f; }
+      .tag { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 10px; fill: #6ef2bd; }
+    </style>
+  </defs>
+  <rect width="900" height="330" fill="#08090b"/>
+  <text class="sm" x="40" y="40">UN TOUR D'AGENT, DÉCOMPOSÉ</text>
+
+  <!-- bracket mémoire -->
+  <path d="M60 78 L60 68 L840 68 L840 78" fill="none" stroke="#2c5a49" stroke-width="1"/>
+  <text class="tag" x="450" y="62" text-anchor="middle">KV cache alloué de bout en bout</text>
+
+  <!-- segments -->
+  <rect x="60" y="96" width="90" height="44" rx="3" fill="#0f1a16" stroke="#2c5a49"/>
+  <text class="in" x="105" y="123" text-anchor="middle">prérem-</text>
+  <text class="in" x="105" y="136" text-anchor="middle">plissage</text>
+
+  <rect x="150" y="96" width="410" height="44" rx="3" fill="#15181d" stroke="#3a424c"/>
+  <text class="lbl" x="355" y="123" text-anchor="middle">appel d'outil</text>
+  <text class="in" x="355" y="140" text-anchor="middle" fill="#8b939d">le GPU ne calcule rien pour cette session</text>
+
+  <rect x="560" y="96" width="90" height="44" rx="3" fill="#0f1a16" stroke="#2c5a49"/>
+  <text class="in" x="605" y="123" text-anchor="middle">génération</text>
+
+  <rect x="650" y="96" width="190" height="44" rx="3" fill="#15181d" stroke="#3a424c"/>
+  <text class="lbl" x="745" y="123" text-anchor="middle">appel d'outil</text>
+  <text class="in" x="745" y="140" text-anchor="middle" fill="#8b939d">le contexte grossit</text>
+
+  <!-- légende calcul / attente -->
+  <rect x="60" y="176" width="10" height="10" rx="2" fill="#0f1a16" stroke="#2c5a49"/>
+  <text class="cap" x="78" y="185">calcul</text>
+  <rect x="140" y="176" width="10" height="10" rx="2" fill="#15181d" stroke="#3a424c"/>
+  <text class="cap" x="158" y="185">attente d'un outil, mémoire immobilisée</text>
+
+  <text class="in" x="60" y="230">La session ne produit aucun token pendant l'appel d'outil. Sa place en mémoire, elle, est</text>
+  <text class="in" x="60" y="252">toujours prise : c'est le prix d'un agent dont on ne compte que les tokens.</text>
+
+  <text class="cap" x="60" y="296">Proportions illustratives : un outil répond en quelques millisecondes ou en plusieurs minutes.</text>
+  <text class="cap" x="60" y="312">Aucune de ces durées n'a été mesurée ici.</text>
+</svg>
